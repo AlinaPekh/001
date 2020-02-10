@@ -1,0 +1,29 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrant configuration
+
+Vagrant.configure("2") do |config|
+config.vm.define "ubuntu" do |ub|
+  
+  ub.vm.hostname = "server"
+  ub.vm.box = "ubuntu/bionic64"
+  ub.vm.box_check_update = false
+  ub.vm.network "forwarded_port", guest: 8090, host: 8080, protocol: "tcp"
+  ub.vm.network "forwarded_port", guest: 3306, host: 3306, protocol: "tcp" 
+  ub.vm.network "private_network", ip: "192.168.33.10"
+ 
+
+  config.vm.provider "virtualbox" do |vb|
+  
+  vb.name = "server"
+  vb.gui = true
+  vb.memory = "5120"
+
+ end
+
+  config.vm.provision "shell", inline: <<-SHELL
+  apt-get install -y apache2
+  SHELL
+end
+end
